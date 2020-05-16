@@ -188,6 +188,7 @@ summary {
 <div id="data-wrangling-webinar" class="section level2">
 <h2>Data Wrangling Webinar</h2>
 <p>This is a step-through of the work done in the Data Wrangling Webinar from RStudio.</p>
+<p>Webinar is here: <a href="https://rstudio.com/resources/webinars/data-wrangling-with-r-and-rstudio/" class="uri">https://rstudio.com/resources/webinars/data-wrangling-with-r-and-rstudio/</a></p>
 <p>Firstly, load essential packages:</p>
 <pre class="r"><code>library(&quot;tidyr&quot;)
 library(&quot;dplyr&quot;)</code></pre>
@@ -216,7 +217,8 @@ cases</code></pre>
 ## 1      FR  7000  6900  7000
 ## 2      DE  5800  6000  6200
 ## 3      US 15000 14000 13000</code></pre>
-<p>Converting it to a “tidy” data frame:</p>
+<p>The issue is that the same variable with multiple years is split across the data frame. Really we want a 3 column dataframe - Country / Year / “n”</p>
+<p>Converting it to a “tidy” data frame we use the <em>gather</em> function:</p>
 <pre class="r"><code>gather(cases, &quot;year&quot;,&quot;n&quot;,2:4)</code></pre>
 <pre><code>##   country year     n
 ## 1      FR 2011  7000
@@ -233,6 +235,53 @@ cases</code></pre>
 — <strong>year</strong> is the name of the new column variable, representing the column names of the original data frame<br />
 — <strong>n</strong> is the name of the new column variable that includes all the values of the data frame<br />
 — <strong>2:4</strong> is used to show that only columns 2 to 4 of the original data frame need to be transformed into our new data frame.</p>
+<p>Next, to move onto different issues with another dataset.</p>
+<pre class="r"><code>load(&quot;pollution.rdata&quot;)
+pollution</code></pre>
+<pre><code>##       city  size amount
+## 1 New York large     23
+## 2 New York small     14
+## 3   London large     22
+## 4   London small     16
+## 5  Beijing large    121
+## 6  Beijing small     56</code></pre>
+<p>Here, the issue is that there is a duplication of variables in the “city” column which are matched to the size. We want to separate this out into 3 columns of city / large / small. In this way the data can be called easily with reference to a variable in the data frame.</p>
+<p>Here we use the <em>spread</em> function to make it “tidy”</p>
+<pre class="r"><code>spread(pollution, size, amount)</code></pre>
+<pre><code>##       city large small
+## 1  Beijing   121    56
+## 2   London    22    16
+## 3 New York    23    14</code></pre>
+<p>The spread function inputs are:<br />
+—<strong>pollution</strong> as the data frame to transform<br />
+—<strong>size</strong> as the key column to use with each factor used as a new column<br />
+—<strong>amount</strong> as the associated values to be used in the dataframe</p>
+<p>Note that <em>spread</em> and <em>gather</em> are opposites. Applying both should return the original data frame.</p>
+<p>Another useful function is <em>separate</em> which creates additional columns from one original column:</p>
+<pre class="r"><code>storms2&lt;-separate(storms, date, c(&quot;year&quot;,&quot;month&quot;, &quot;day&quot;), sep = &quot;-&quot;)
+storms2</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   storm    wind pressure year  month day  
+##   &lt;chr&gt;   &lt;int&gt;    &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 Alberto   110     1007 2000  08    03   
+## 2 Alex       45     1009 1998  07    27   
+## 3 Allison    65     1005 1995  06    03   
+## 4 Ana        40     1013 1997  06    30   
+## 5 Arlene     50     1010 1999  06    11   
+## 6 Arthur     45     1010 1996  06    17</code></pre>
+<p>The individual parts of separate are fairly</p>
+<p><em>unite</em> is the opposite of <em>separate</em></p>
+<pre class="r"><code>storms3&lt;-unite(storms2, &quot;date&quot;, year, month, day, sep = &quot;-&quot;)
+storms3</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   storm    wind pressure date      
+##   &lt;chr&gt;   &lt;int&gt;    &lt;int&gt; &lt;chr&gt;     
+## 1 Alberto   110     1007 2000-08-03
+## 2 Alex       45     1009 1998-07-27
+## 3 Allison    65     1005 1995-06-03
+## 4 Ana        40     1013 1997-06-30
+## 5 Arlene     50     1010 1999-06-11
+## 6 Arthur     45     1010 1996-06-17</code></pre>
 </div>
 
 
