@@ -11,22 +11,41 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+##Data Wrangling Webinar
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This is a step-through of the work done in the Data Wrangling Webinar from RStudio.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Firstly, load essential packages:
 
-```{r cars}
-summary(cars)
+```{r}
+library("tidyr")
+library("dplyr")
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+This is an example of tidy data. Each column is a variable to be called upon.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+load("storms.rdata")
+storms
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Whilst this is an examploe of data that is not yet "tidy"
+
+```{r}
+load("cases.rdata")
+cases
+```
+
+Converting it to a "tidy" data frame:
+
+```{r}
+gather(cases, "year","n",2:4)
+
+```
+
+Within the gather function:  
+ --- **cases** is the data frame to be transformed  
+ --- **year** is the name of the new column variable, representing the column names of the original data frame  
+ --- **n** is the name of the new column variable that includes all the values of the data frame  
+ --- **2:4** is used to show that only columns 2 to 4 of the original data frame need to be transformed into our new data frame.
